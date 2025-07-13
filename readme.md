@@ -32,6 +32,24 @@ RUN addgroup app && adduser -S -G app app
     └────────────────────────────────── Create group command
 ```
 
+## Type of roles
+### 1. Root user (dangerous)
+UID: 0
+Privileges: EVERYTHING
+Can: Delete system files, access all data
+
+### 2. Regular user  
+UID: 1000+
+Privileges: Limited
+Can: Access own files, run programs
+Has: Home directory, login shell
+
+### 3. System user (what we create)
+UID: 100-999  
+Privileges: Limited (like regular user)
+Can: Run programs, access assigned files
+Has: NO home directory, NO login shell
+
 ## What each part does:
 - `addgroup app` → Creates group called "app"
 - `adduser -S -G app app` → Creates system user "app" in group "app"
