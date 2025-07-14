@@ -55,6 +55,17 @@ Has: NO home directory, NO login shell
 - `adduser -S -G app app` → Creates system user "app" in group "app"
 - `USER app` → All future commands run as "app" user
 
+## Change ownership of files before running
+```bash
+RUN chown -R app_user:app_group /app
+    ↑     ↑  ↑        ↑         ↑
+    │     │  │        │         └── Target directory
+    │     │  │        └─────────── Group to assign
+    │     │  └──────────────────── User to assign  
+    │     └─────────────────────── Recursive flag
+    └───────────────────────────── Change ownership command
+```
+
 ## Why this matters:
 ```bash
 # Bad - runs as root
@@ -63,3 +74,13 @@ docker run my-app              # If hacked, attacker has root access
 # Good - runs as regular user  
 docker run my-app              # If hacked, attacker has limited access
 ```
+
+
+
+## Handling images/containers
+
+### 1. Build image from dockerfile in current directory with :latest (default) tag
+ docker build -t react-docker .    
+
+### 2. Run the image in a container while mapping port 5173 of isolated container to 3000 of host 
+ docker run -p 3000:5173 react-docker
