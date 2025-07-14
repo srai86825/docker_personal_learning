@@ -84,3 +84,71 @@ docker run my-app              # If hacked, attacker has limited access
 
 ### 2. Run the image in a container while mapping port 5173 of isolated container to 3000 of host 
  docker run -p 3000:5173 react-docker
+
+### 3. Delete all the stopped containers
+ docker container prune
+
+### 4. 
+
+
+
+
+
+# Dev environment Run a app
+Great command! This is a **smart development setup**. Let me break it down:
+
+## Breaking down each part:
+
+```bash
+docker run -p 3000:5173 -v "$(pwd):/app" -v /app/node_modules react-docker
+           ↑            ↑               ↑
+           │            │               └── Anonymous volume for node_modules
+           │            └─────────────────── Mount your local code
+           └──────────────────────────────── Port mapping
+```
+
+## What each flag does:
+
+### 1. Port mapping:
+```bash
+-p 3000:5173
+# Access container's port 5173 via localhost:3000
+```
+
+### 2. Code volume mount:
+```bash
+-v "$(pwd):/app"
+# Mount your local project folder to /app in container
+# Enables hot reloading!
+```
+
+### 3. Node modules protection:
+```bash
+-v /app/node_modules
+# Creates anonymous volume for node_modules
+# Prevents local files from overwriting container's node_modules
+```
+
+## Why the second volume is crucial:
+
+```bash
+# Without /app/node_modules volume:
+-v "$(pwd):/app"              # Your local folder overwrites EVERYTHING in /app
+                             # Including node_modules built for Alpine Linux!
+                             # App crashes: "Cannot find module 'xyz'"
+
+# With /app/node_modules volume:
+-v "$(pwd):/app"              # Your code files mount
+-v /app/node_modules          # But node_modules stays from container
+                             # App works perfectly!
+```
+
+## What gets mounted where:
+
+```
+Your Computer          Container
+├── src/              →  /app/src/              (live sync)
+├── package.json      →  /app/package.json     (live sync)  
+├── node_modules/     ×  /app/node_modules/    (container's version protected)
+└── README.md         →  /app/README.md        (live sync)
+```
