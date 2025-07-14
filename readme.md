@@ -88,16 +88,13 @@ docker run my-app              # If hacked, attacker has limited access
 ### 3. Delete all the stopped containers
  docker container prune
 
-### 4. 
+###4. 
 
 
 
 
 
-# Dev environment Run a app
-Great command! This is a **smart development setup**. Let me break it down:
-
-## Breaking down each part:
+# Dev environment run a app
 
 ```bash
 docker run -p 3000:5173 -v "$(pwd):/app" -v /app/node_modules react-docker
