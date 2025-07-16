@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # Node.js API service
+  api:
+    build: .
+    container_name: vq-api
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - DATABASE_URL=postgresql://vquser:Admin@12345@db:5432/vqdb?schema=public
+      - AWS_REGION=ap-south-1
+      - AWS_ACCESS_KEY_ID=AKIA3FLD6DLTO5D4YG4K
+      - AWS_SECRET_ACCESS_KEY=[HIDDEN]
+      - AWS_S3_BUCKET=joslery-virtual-qa
+      - AWS_S3_ENDPOINT=https://s3.ap-south-1.amazonaws.com/joslery-virtual-qa
+      - RESEND_API_KEY=[HIDDEN]
+      - FROM_EMAIL=no-reply@clyntro.com
+      - AWS_SES_REGION=us-east-1
+      - AWS_SES_ACCESS_KEY_ID=your_ses_access_key_id
+      - AWS_SES_SECRET_ACCESS_KEY=your_ses_secret_access_key
+      - JWT_SECRET=default_secret
+      - COST_CUT=0.2
+      - ALL_INFO_MAILS=vithal@oyesense.com,srai86825@gmail.com,aprendu.aman@oyesense.com,esuchana7@gmail.com
+      - LEMON_API_KEY=[HIDDEN]
+      - SIGNING_SECRET=[HIDDEN]
+      - STORE_ID=[HIDDEN]
+      - VARIANT_ID=[HIDDEN]
+      - DO_SPACES_KEY=[HIDDEN]
+      - DO_SPACES_SECRET=[HIDDEN]
+      - DO_SPACES_ENDPOINT=https://blr1.digitaloceanspaces.com
+      - DO_SPACES_CDN_ENDPOINT=https://clyntro.blr1.cdn.digitaloceanspaces.com
+      - DO_SPACES_BUCKET=clyntro
+      - DO_SPACE_REGION=blr1
+      - APP_VERSION=1.6.1
+    volumes:
+      - ./logs:/usr/src/app/logs
+    networks:
+      - vq-network
+
+  # PostgreSQL Database service
+  db:
+    image: postgres:15-alpine
+    container_name: vq-db
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Admin@12345
+      - POSTGRES_USER=vquser
+      - POSTGRES_DB=vqdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - vq-network
+
+networks:
+  vq-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
